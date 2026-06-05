@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile,status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Request
 from app.core.database import get_db
 from app.core.logger import get_logger
 from sqlalchemy.orm import Session
@@ -77,3 +77,4 @@ async def update_profile(
         "user": user.model_dump(),
         "file": profile_picture.filename if profile_picture else None
     }
+
