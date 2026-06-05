@@ -1,19 +1,15 @@
 from fastapi import FastAPI
-import logging
+from dotenv import load_dotenv
+import os
+from app.core.logger import get_logger
+from app.api import auth as auth_v1
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-# 1. Create an instance of the FastAPI class
+load_dotenv() 
+
+logger = get_logger(__name__)
 app = FastAPI()
 
-# 2. Define a route (GET request to the root URL "/")
-@app.get("/")
-def read_root():
-    logger.info("Reading root endpoint")
-    return {"message": "Hello World", "status": "It works!"}
+# Register API routers
+app.include_router(auth_v1.router, prefix="/api/v1")
 
-# 3. Define another route with a path parameter
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "query_param": q}

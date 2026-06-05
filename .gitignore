@@ -132,3 +132,4 @@ __pypackages__/
 .project
 *.swo
 
+.env
