@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 import re
+from fastapi import Form, File, UploadFile, Depends
+
 
 class UserCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=50, title="Name", description="The user's real name")
@@ -30,6 +32,32 @@ class UserCreate(BaseModel):
         return v
 
 
+class UpdateProfile(BaseModel):
+    name: str = Field(min_length=2, max_length=50)
+    username: str = Field(
+        min_length=3,
+        max_length=20,
+        pattern=r"^[a-zA-Z0-9_]+$"
+    )
+    email: EmailStr
+
+
+
+class UpdateProfileForm(UpdateProfile):
+    @classmethod
+    def as_form(
+        cls,
+        name: str = Form(...),
+        username: str = Form(...),
+        email: EmailStr = Form(...)
+    ):
+        return cls(
+            name=name,
+            username=username,
+            email=email
+        )
+
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8)
@@ -44,3 +72,12 @@ class UserResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+    
+    
+class UserLoginResponse(BaseModel):
+        email :str 
+        access_token: str
+        context: str = "Login successful!"
+        model_config = {
+            "from_attributes": True
+        }
